@@ -31,13 +31,14 @@ dropArea.addEventListener('drop', handleDrop, false)
 fileInput.onchange = ({ target }) => {
   let file = target.files[0];
   console.log(target.files);
+  const data = getDetails();
   if (file) {
     let fileName = file.name;
     // if (fileName.length >= 12) {
     //   let splitName = fileName.split('.');
     //   fileName = splitName[0].substring(0, 13) + "... ." + splitName[1];
     // }
-    uploadFile(fileName);
+    uploadFile(fileName, file);
   }
 }
 
@@ -47,9 +48,10 @@ function handleDrop(e) {
   // let file1 = dt.files;
 
   let file = dt.files[0];
+  console.log(file);
   if (file) {
     let fileName = file.name;
-    uploadFile(fileName);
+    uploadFile(fileName, file);
   }
 
   // console.log(file1[0].name);
@@ -62,11 +64,24 @@ function preventDefaults(e) {
   e.stopPropagation()
 }
 
-function uploadFile(name) {
+function getDetails(){
+  let title=document.getElementById('asdasd').val();
+  let noOfDays=document.getElementById("mn").val();
+  return {
+    title: title,
+    noOfDays: noOfDays
+  }
+}
+
+function uploadFile(name,file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("file", file);
+
   $.ajax({
     type: "POST",
     url: "php/upload.php",
-    data: new FormData(form),
+    data: formData,
     xhr: function () {
       let xhr = new window.XMLHttpRequest();
       xhr.upload.addEventListener("progress", function (event) {
