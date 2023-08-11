@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="" class="dropzone" id="image_upload" enctype="multipart/form-data">
+
+        <div class="upload-input">
+            <label for="delivery_address" id="delivery_address_label">Delivery address</label>
+            <input type="text" name="delivery_address" id="delivery_address" class="form-control" />
+        </div>
+
+        <div class="" id="drop-area" style="height: 500px;">
+            <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed
+                region
+            </p>
+        </div>
+
+        <div class="upload-input">
+            <input class="btn btn-info w-100" type="submit" id="btnUpload" value="Send" />
+        </div>
+
+    </form>
+    <script>
+        let dropArea = document.getElementById("drop-area");
+
+        let fileList = [];
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+
+        })
+
+        function preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false)
+
+        function handleDrop(e) {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            files = [...files];
+            files.forEach(addFiles);
+        }
+
+        function addFiles(file) {
+
+            fileList.push(file);
+        }
+
+        btnUpload.addEventListener("click", function (evt) {
+            evt.preventDefault();
+
+            const xhr = new XMLHttpRequest();
+            const form = document.getElementById("image_upload");
+            const formData = new FormData(form);
+
+            console.log(fileList);
+
+            formData.append("fileList", fileList);
+
+            xhr.open("POST", "add.php");
+
+            xhr.onreadystatechange = function () {
+                document.getElementById("phpResponse").innerHTML = this.responseText;
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+</body>
+
+</html>
